@@ -12,7 +12,7 @@ class Client
     private $_endpoint = Constants::END_POINT;
     private $_connectionTimeout = 45;
     private $_timeout = 45;
-    private $_proxy = null;
+    private $_proxyHost = null;
     private $_proxyPort = null;
 
     function __construct($private_key) {
@@ -31,9 +31,20 @@ class Client
         return Constants::SDK_VERSION;
     }
 
-    public function post($target, $array, $closure=None)
+    public function setProxy($host, $port) {
+        $this->_proxyHost = $host;
+        $this->_proxyPort = $port;
+    }
+
+    public function setTimeOuts($connectionTimeout, $timeout) {
+        $this->_connectionTimeout = $connectionTimeout;
+        $this->_timeout = $timeout;
+    }
+
+    public function post($target, $array)
     {
-        $curl = curl_init($this->_endpoint . $target);
+        $url = $this->_endpoint . $target;
+        $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-type: application/json"));
@@ -45,8 +56,8 @@ class Client
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT , $this->_connectionTimeout);
         curl_setopt($curl, CURLOPT_TIMEOUT, $this->_timeout);
 
-        if($this->_proxy && $this->_proxyPort) {
-          curl_setopt($curl, CURLOPT_PROXY, $this->_proxy);
+        if($this->_proxyHost && $this->_proxyPort) {
+          curl_setopt($curl, CURLOPT_PROXY, $this->_proxyHost);
           curl_setopt($curl, CURLOPT_PROXYPORT, $this->_proxyPort);
         }
 
@@ -54,17 +65,13 @@ class Client
 
         $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         $allowedCode = array(200, 401);
+        $response = json_decode($raw_response , true);
 
-        if ( !in_array($status, $allowedCode) ) {
-            throw new PayzenException("Error: call to URL $url failed with status $status, response $json_response, curl_error " . curl_error($curl) . ", curl_errno " . curl_errno($curl));
+        if ( !in_array($status, $allowedCode) || is_null($response)) {
+            throw new PayzenException("Error: call to URL $url failed with status $status, response $raw_response, curl_error " . curl_error($curl) . ", curl_errno " . curl_errno($curl));
         }
 
         curl_close($curl);
-        $response = json_decode($raw_response , true);
-
-        if (is_null($response)) {
-            throw new PayzenException("invalid answer: " . $raw_response);
-        }
 
         return $response;
     }
