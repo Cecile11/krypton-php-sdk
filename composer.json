@@ -2,15 +2,16 @@
     "name": "payzen/krypton-php-sdk",
     "license": "MIT",
     "description": "Payzen PHP SDK",
-    "keywords": ["payzen", "api", "sdk"],
+    "keywords": ["payzen", "api", "sdk", "creditcard", "payment"],
     "homepage": "https://payzen.io/",
     "require": {
-        "php": ">=5.3.3"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "4.1.*",
+        "php": ">=5.3.3",
         "ext-curl": "*",
         "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.1.*"
+        
     },
     "autoload": {
         "psr-0": { "Payzen": "src/" }
