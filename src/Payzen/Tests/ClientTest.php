@@ -54,7 +54,10 @@ class ClientTest extends PHPUnit_Framework_TestCase
     public function testClientConfiguration()
     {
         $client = new Client("A:B");
+        $client->setPublickey("33148340:testpublickey_l83P7WpRK2hoUIcWyFVQsd4Omsz0XbCKYtNKeGbpX6CvS");
+
         $this->assertEquals(Constants::SDK_VERSION, $client->getVersion());
+        $this->assertEquals("33148340:testpublickey_l83P7WpRK2hoUIcWyFVQsd4Omsz0XbCKYtNKeGbpX6CvS", $client->getPublicKey());
     }
 
     /**

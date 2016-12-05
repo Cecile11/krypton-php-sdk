@@ -8,7 +8,8 @@ class Client
 {
     private $_login = null;
     private $_password = null;
-    private $_private_key = null;
+    private $_privateKey = null;
+    private $_publicKey = null;
     private $_endpoint = Constants::END_POINT;
     private $_connectionTimeout = 45;
     private $_timeout = 45;
@@ -22,13 +23,21 @@ class Client
             throw new PayzenException("invalid private key: " . $private_key);
         }
 
-        $this->_private_key = $private_key;
+        $this->_privateKey = $private_key;
         $this->_login = $auth[0];
         $this->_password = $auth[1];
     }
 
     public function getVersion() {
         return Constants::SDK_VERSION;
+    }
+
+    public function setPublicKey($publicKey) {
+        $this->_publicKey = $publicKey;
+    }
+
+    public function getPublicKey() {
+        return $this->_publicKey;
     }
 
     public function setProxy($host, $port) {
@@ -50,7 +59,7 @@ class Client
         curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-type: application/json"));
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_USERAGENT, 'Krypton PHP SDK ' + Constants::SDK_VERSION);
-        curl_setopt($curl, CURLOPT_USERPWD, $this->_private_key);
+        curl_setopt($curl, CURLOPT_USERPWD, $this->_privateKey);
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($array));
         curl_setopt($curl, CURLOPT_CONNECTTIMEOUT , $this->_connectionTimeout);
