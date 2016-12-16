@@ -45,4 +45,6 @@ require_once('/path/to/php-sdk/autoload.php');
 
 ## SDK Usage
 
-Go to https://payzen.io
+A simple integration example is [available here](https://github.com/payzen/krypton-php-examples/blob/master/src/SDKTest.php)
+
+You can also take a look to our github examples repository: https://github.com/payzen/krypton-php-examples
